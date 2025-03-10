@@ -58,9 +58,9 @@ const ClientPresentation: React.FC<PresentationProps> = ({
   }, [slides.length]);
   
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
-    if (event.key === 'ArrowRight' || event.key === ' ') {
+    if (event.key === 'ArrowRight' || event.key === ' ' || event.key === 'ArrowDown') {
       goToSlide(currentSlideIndex + 1);
-    } else if (event.key === 'ArrowLeft') {
+    } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
       goToSlide(currentSlideIndex - 1);
     }
   }, [goToSlide, currentSlideIndex]);
