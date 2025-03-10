@@ -26,7 +26,6 @@ const ClientPresentation: React.FC<PresentationProps> = ({
   const [slides, setSlides] = useState<SlideType[]>(initialSlides);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [loading, setLoading] = useState(initialSlides.length === 0);
-  const [currentFile, setCurrentFile] = useState(initialFile);
   
   const fetchSlides = useCallback(async (file: string) => {
     try {
@@ -47,9 +46,9 @@ const ClientPresentation: React.FC<PresentationProps> = ({
   
   useEffect(() => {
     if (initialSlides.length === 0) {
-      fetchSlides(currentFile);
+      fetchSlides(initialFile);
     }
-  }, [fetchSlides, initialSlides.length, currentFile]);
+  }, [fetchSlides, initialSlides.length, initialFile]);
   
   const goToSlide = useCallback((index: number) => {
     if (index >= 0 && index < slides.length) {
