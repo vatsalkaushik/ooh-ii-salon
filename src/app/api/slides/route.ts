@@ -58,10 +58,31 @@ function parseMarkdownToSlides(filePath: string): Slide[] {
         return '';
       });
       
-      // Extract images
+      // Extract images - handle both standard Markdown and Obsidian formats
       const images: string[] = [];
+      
+      // Handle standard Markdown image syntax: ![alt](path)
       sectionContent = sectionContent.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, src) => {
-        images.push(src);
+        // Ensure image paths are properly formatted
+        const formattedSrc = src.trim();
+        // If it's a relative path without a leading slash and not an external URL, add the leading slash
+        if (!formattedSrc.startsWith('/') && !formattedSrc.startsWith('http')) {
+          images.push(`/${formattedSrc}`);
+        } else {
+          images.push(formattedSrc);
+        }
+        return '';
+      });
+      
+      // Handle Obsidian image syntax: ![[image path]]
+      sectionContent = sectionContent.replace(/!\[\[(.*?)\]\]/g, (match, imagePath) => {
+        const formattedPath = imagePath.trim();
+        // Assume these are images in the public/images directory
+        if (!formattedPath.startsWith('/') && !formattedPath.startsWith('http')) {
+          images.push(`/images/${formattedPath}`);
+        } else {
+          images.push(formattedPath);
+        }
         return '';
       });
       

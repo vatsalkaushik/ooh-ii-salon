@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Slide from './Slide';
+import TableOfContents from './TableOfContents';
 
 interface SlideType {
   id: string;
@@ -20,7 +21,7 @@ interface PresentationProps {
 
 const ClientPresentation: React.FC<PresentationProps> = ({ 
   initialSlides = [], 
-  initialFile = 'Part 1.md' 
+  initialFile = 'slides.md'
 }) => {
   const [slides, setSlides] = useState<SlideType[]>(initialSlides);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
@@ -50,25 +51,19 @@ const ClientPresentation: React.FC<PresentationProps> = ({
     }
   }, [fetchSlides, initialSlides.length, currentFile]);
   
-  const goToNextSlide = useCallback(() => {
-    if (currentSlideIndex < slides.length - 1) {
-      setCurrentSlideIndex(currentSlideIndex + 1);
+  const goToSlide = useCallback((index: number) => {
+    if (index >= 0 && index < slides.length) {
+      setCurrentSlideIndex(index);
     }
-  }, [currentSlideIndex, slides.length]);
-  
-  const goToPrevSlide = useCallback(() => {
-    if (currentSlideIndex > 0) {
-      setCurrentSlideIndex(currentSlideIndex - 1);
-    }
-  }, [currentSlideIndex]);
+  }, [slides.length]);
   
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     if (event.key === 'ArrowRight' || event.key === ' ') {
-      goToNextSlide();
+      goToSlide(currentSlideIndex + 1);
     } else if (event.key === 'ArrowLeft') {
-      goToPrevSlide();
+      goToSlide(currentSlideIndex - 1);
     }
-  }, [goToNextSlide, goToPrevSlide]);
+  }, [goToSlide, currentSlideIndex]);
   
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -94,16 +89,24 @@ const ClientPresentation: React.FC<PresentationProps> = ({
   }
   
   return (
-    <div className="presentation relative bg-gray-100 dark:bg-gray-900 min-h-screen">
-      {slides.map((slide, index) => (
-        <Slide 
-          key={slide.id} 
-          slide={slide} 
-          isActive={index === currentSlideIndex} 
-        />
-      ))}
+    <div className="presentation relative bg-white dark:bg-white min-h-screen">
+      <TableOfContents 
+        slides={slides} 
+        currentSlideIndex={currentSlideIndex} 
+        onSlideSelect={goToSlide} 
+      />
       
-      <div className="fixed bottom-5 left-5 text-gray-600 dark:text-gray-300">
+      <div className="ml-0 md:ml-64 transition-all duration-300">
+        {slides.map((slide, index) => (
+          <Slide 
+            key={slide.id} 
+            slide={slide} 
+            isActive={index === currentSlideIndex} 
+          />
+        ))}
+      </div>
+      
+      <div className="fixed bottom-5 left-5 md:left-[17rem] text-gray-600 dark:text-gray-300 transition-all duration-300">
         Slide {currentSlideIndex + 1} of {slides.length}
       </div>
     </div>
