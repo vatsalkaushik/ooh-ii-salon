@@ -55,7 +55,7 @@ const Slide: React.FC<SlideProps> = ({ slide, isActive }) => {
             {slide.quotes.map((quote, index) => (
               <blockquote 
                 key={index} 
-                className="border-l-4 border-blue-500 pl-4 italic text-gray-600 dark:text-gray-300 my-4"
+                className="border-l-4 border-blue-500 pl-4 text-gray-600 dark:text-gray-300 my-4"
               >
                 {quote}
               </blockquote>
